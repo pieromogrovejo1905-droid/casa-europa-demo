@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Promo Casa Europa 2027 · Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kaushan+Script&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  :root { --script: "Kaushan Script", cursive; }
+  body { overflow-x: hidden; }
+  .demo-bar { position: relative; z-index: 60; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+  .script { font-family: var(--script); font-weight: 400; letter-spacing: 0; text-transform: none; }
+
+  /* Cabecera flotante tipo píldora */
+  header.top { position: sticky; top: 12px; z-index: 50; margin: 22px auto 0; max-width: 1180px; padding: 0 20px; }
+  header.top .barra { display: flex; align-items: center; gap: 18px; background: rgba(255,255,255,.82); backdrop-filter: blur(10px); border-radius: 999px; padding: 8px 10px 8px 22px; box-shadow: 0 10px 30px -12px rgba(17,17,17,.25); }
+  header.top .logo-ce { width: 92px; }
+  header.top nav { display: flex; gap: 4px; margin-left: auto; }
+  header.top nav a { text-decoration: none; font-weight: 600; font-size: 14px; padding: 9px 14px; border-radius: 999px; }
+  header.top nav a:hover { background: var(--crema); }
+  .pill { display: inline-flex; align-items: center; gap: 8px; background: var(--rojo); color: #fff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 20px; border-radius: 999px; transition: transform .15s, background .15s; white-space: nowrap; }
+  .pill:hover { background: var(--rojo-osc); transform: translateY(-2px); }
+  .pill.negra { background: var(--tinta); }
+  .pill.negra:hover { background: #000; }
+  .pill.grande { font-size: 16px; padding: 17px 28px; }
+  .pill.borde { background: transparent; color: var(--tinta); box-shadow: inset 0 0 0 2px var(--tinta); }
+  .pill.borde:hover { background: var(--tinta); color: #fff; }
+  @media (max-width: 860px) { header.top nav { display: none; } header.top .barra { justify-content: space-between; } }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center; padding: 60px 0 90px; position: relative; }
+  .sello { display: inline-flex; align-items: center; gap: 10px; background: #fff; border-radius: 999px; padding: 6px 14px 6px 6px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 14px -6px rgba(0,0,0,.2); margin-bottom: 22px; }
+  .sello span { background: var(--rojo); color: #fff; border-radius: 999px; padding: 4px 10px; font-weight: 800; letter-spacing: .08em; font-size: 11px; }
+  .hero h1 { font-size: clamp(56px, 8.4vw, 118px); line-height: .9; letter-spacing: .01em; margin: 0 0 20px; }
+  .hero h1 .rojo { color: var(--rojo); }
+  .hero h1 .script { display: block; color: var(--rojo); font-size: .62em; line-height: 1.3; transform: rotate(-4deg); transform-origin: left center; margin: 10px 0 18px 6px; }
+  .hero .lead { font-size: 18px; max-width: 480px; margin: 0 0 30px; color: #3a3631; }
+  .hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero .datos { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
+  .hero .datos div { background: #fff; border-radius: 18px; padding: 12px 18px; min-width: 110px; }
+  .hero .datos b { display: block; font-family: var(--titulo); font-weight: 400; font-size: 34px; line-height: 1; color: var(--rojo); }
+  .hero .datos span { font-size: 12px; font-weight: 600; color: var(--gris); }
+
+  .collage { position: relative; height: 560px; }
+  .foto { position: absolute; border-radius: 26px; overflow: hidden; box-shadow: 0 30px 50px -24px rgba(17,17,17,.55); background: #ddd; border: 6px solid #fff; }
+  .foto img { width: 100%; height: 100%; object-fit: cover; object-position: 30% 60%; display: block; }
+  .foto.f1 { width: 74%; height: 300px; right: 0; top: 10px; transform: rotate(3deg); }
+  .foto.f2 { width: 56%; height: 230px; left: 0; top: 270px; transform: rotate(-5deg); }
+  .foto.f3 { width: 44%; height: 190px; right: 6%; bottom: 0; transform: rotate(4deg); }
+  .foto small { position: absolute; left: 12px; bottom: 12px; background: rgba(17,17,17,.78); color: #fff; font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px; }
+  .badge { position: absolute; left: 6%; top: 40px; width: 150px; height: 150px; border-radius: 50%; background: var(--tinta); color: var(--crema); display: grid; place-items: center; text-align: center; z-index: 3; box-shadow: 0 18px 30px -14px rgba(0,0,0,.6); }
+  .badge .giro { position: absolute; inset: 0; animation: gira 18s linear infinite; }
+  .badge .giro text { font: 700 11px var(--texto); letter-spacing: .26em; fill: var(--crema); }
+  .badge b { font-family: var(--titulo); font-weight: 400; font-size: 40px; line-height: .9; color: #fff; }
+  .badge em { display: block; font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .1em; color: #E8A9B4; }
+  @keyframes gira { to { transform: rotate(360deg); } }
+  .burbuja { position: absolute; right: -6px; top: 300px; z-index: 3; background: #fff; border-radius: 18px 18px 4px 18px; padding: 12px 14px; font-size: 13px; font-weight: 600; box-shadow: 0 14px 28px -14px rgba(0,0,0,.4); max-width: 210px; }
+  .burbuja i { font-style: normal; color: #00A884; display: block; font-size: 11px; font-weight: 800; letter-spacing: .06em; margin-bottom: 2px; }
+  @media (max-width: 920px) { .hero { grid-template-columns: 1fr; padding-top: 40px; } .collage { height: 460px; } .foto.f1 { height: 240px; } .foto.f2 { top: 220px; height: 190px; } .foto.f3 { height: 160px; } .burbuja { top: 230px; } .badge { width: 120px; height: 120px; top: 10px; } .badge b { font-size: 32px; } }
+
+  /* Cinta de categorías */
+  .cinta { background: var(--tinta); color: var(--crema); overflow: hidden; transform: rotate(-1.5deg); margin: 0 -20px; padding: 16px 0; }
+  .cinta .pista { display: flex; gap: 40px; width: max-content; animation: corre 28s linear infinite; font-family: var(--titulo); font-size: 34px; letter-spacing: .08em; }
+  .cinta .pista span::after { content: "✦"; color: var(--rojo); margin-left: 40px; font-size: 24px; vertical-align: 4px; }
+  @keyframes corre { to { transform: translateX(-50%); } }
+
+  section { padding: 100px 0; scroll-margin-top: 90px; }
+  .cabeza { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
+  .cabeza h2 { font-size: clamp(44px, 6vw, 76px); line-height: .92; margin: 0; letter-spacing: .01em; }
+  .cabeza h2 .script { color: var(--rojo); font-size: .6em; line-height: 1.3; display: block; transform: rotate(-3deg); transform-origin: left center; margin: 6px 0 0 4px; }
+  .cabeza p { max-width: 420px; margin: 0; color: #3a3631; }
+
+  /* Pasos */
+  .pasos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .paso { background: #fff; border-radius: 28px; padding: 30px 28px 32px; position: relative; overflow: hidden; transition: transform .2s; }
+  .paso:hover { transform: translateY(-6px) rotate(-.6deg); }
+  .paso .n { font-family: var(--titulo); font-size: 120px; line-height: .8; color: var(--crema-2); position: absolute; right: 18px; top: 16px; }
+  .paso .ic { width: 58px; height: 58px; border-radius: 18px; display: grid; place-items: center; font-size: 28px; background: var(--crema); margin-bottom: 26px; position: relative; }
+  .paso h3 { font-size: 34px; margin: 0 0 8px; position: relative; }
+  .paso p { margin: 0; color: #3a3631; position: relative; }
+  .paso.rojo { background: var(--rojo); color: #fff; }
+  .paso.rojo p { color: #F6D9DE; } .paso.rojo .n { color: rgba(255,255,255,.12); } .paso.rojo .ic { background: rgba(255,255,255,.16); }
+  .paso.negro { background: var(--tinta); color: #fff; }
+  .paso.negro p { color: #c9c3b4; } .paso.negro .n { color: rgba(255,255,255,.1); } .paso.negro .ic { background: rgba(255,255,255,.1); }
+  @media (max-width: 860px) { .pasos { grid-template-columns: 1fr; } }
+
+  /* Productos */
+  .productos-sec { background: var(--tinta); color: var(--crema); border-radius: 44px; margin: 0 12px; }
+  .productos-sec .cabeza p { color: #c9c3b4; }
+  .filtros-cat { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 26px; }
+  .filtros-cat button { border: 1px solid rgba(255,255,255,.2); background: none; color: var(--crema); border-radius: 999px; padding: 8px 16px; font-weight: 600; font-size: 14px; }
+  .filtros-cat button.on, .filtros-cat button:hover { background: var(--crema); color: var(--tinta); }
+  .productos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .prod { background: #1d1b19; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; transition: transform .2s; }
+  .prod:hover { transform: translateY(-6px); }
+  .prod .img { aspect-ratio: 1 / 1; overflow: hidden; position: relative; }
+  .prod .img img { width: 100%; height: 100%; object-fit: cover; object-position: 35% 60%; transition: transform .4s; }
+  .prod:hover .img img { transform: scale(1.06); }
+  .prod .cat { position: absolute; top: 12px; left: 12px; background: var(--crema); color: var(--tinta); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
+  .prod .txt { padding: 16px 18px 20px; }
+  .prod b { display: block; font-family: var(--titulo); font-weight: 400; font-size: 30px; letter-spacing: .03em; line-height: 1; color: #fff; margin-bottom: 6px; }
+  .prod span { font-size: 13px; color: #a9a293; }
+  .fuente { font-size: 12px; color: #8a8478; margin-top: 22px; }
+  @media (max-width: 960px) { .productos { grid-template-columns: repeat(2, 1fr); } .prod b { font-size: 24px; } }
+
+  /* Premios tipo cupón */
+  .premios { display: grid; grid-template-columns: 1.1fr .9fr; gap: 20px; }
+  .cupon { position: relative; border-radius: 28px; padding: 34px; background: var(--rojo); color: #fff; overflow: hidden; }
+  .cupon::before, .cupon::after { content: ""; position: absolute; width: 36px; height: 36px; border-radius: 50%; background: var(--crema); top: 50%; transform: translateY(-50%); }
+  .cupon::before { left: -18px; } .cupon::after { right: -18px; }
+  .cupon .eti { font-size: 12px; font-weight: 800; letter-spacing: .14em; opacity: .8; }
+  .cupon h3 { font-size: 46px; margin: 6px 0 20px; }
+  .montos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; border-top: 2px dashed rgba(255,255,255,.35); padding-top: 22px; }
+  .montos div { background: rgba(255,255,255,.12); border-radius: 18px; padding: 16px; text-align: center; }
+  .montos b { display: block; font-family: var(--titulo); font-weight: 400; font-size: 46px; line-height: 1; }
+  .montos span { font-size: 12px; font-weight: 600; opacity: .85; }
+  .cupon.crema { background: #fff; color: var(--tinta); }
+  .cupon.crema .montos { border-color: var(--linea); grid-template-columns: 1fr; }
+  .cupon.crema .montos div { background: var(--crema); display: flex; justify-content: space-between; align-items: center; text-align: left; padding: 12px 18px; }
+  .cupon.crema .montos b { font-size: 26px; color: var(--rojo); }
+  .cupon.crema .montos span { font-size: 14px; }
+  @media (max-width: 860px) { .premios { grid-template-columns: 1fr; } .montos b { font-size: 34px; } }
+
+  /* Tiendas */
+  .cadenas { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .cadena { background: #fff; border-radius: 22px; padding: 20px; }
+  .cadena h4 { font-size: 30px; margin: 0 0 10px; display: flex; justify-content: space-between; align-items: center; }
+  .cadena h4 small { font: 700 11px var(--texto); background: var(--crema); padding: 3px 8px; border-radius: 999px; letter-spacing: 0; }
+  .cadena .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .cadena .chips span { font-size: 12px; font-weight: 600; background: var(--crema); padding: 4px 9px; border-radius: 999px; }
+  @media (max-width: 960px) { .cadenas { grid-template-columns: repeat(2, 1fr); } }
+
+  /* FAQ */
+  .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+  .faq details { background: #fff; border-radius: 20px; padding: 0 22px; }
+  .faq summary { padding: 20px 0; font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 14px; align-items: center; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--crema); display: grid; place-items: center; font-size: 18px; color: var(--rojo); transition: transform .2s; }
+  .faq details[open] summary::after { transform: rotate(45deg); background: var(--rojo); color: #fff; }
+  .faq p { margin: 0 0 20px; color: #3a3631; white-space: pre-line; }
+  @media (max-width: 860px) { .faq { grid-template-columns: 1fr; } }
+
+  /* Llamado final */
+  .final { background: var(--rojo); color: #fff; border-radius: 44px; margin: 0 12px; padding: 70px 50px; display: grid; grid-template-columns: 1.2fr .8fr; gap: 30px; align-items: center; position: relative; overflow: hidden; }
+  .final h2 { font-size: clamp(46px, 6vw, 84px); line-height: .9; margin: 0 0 24px; }
+  .final h2 .script { display: block; font-size: .55em; line-height: 1.3; color: #F6D9DE; transform: rotate(-3deg); transform-origin: left center; margin-top: 6px; }
+  .final .chat { background: #EFE7DD; border-radius: 26px; padding: 18px; color: var(--tinta); transform: rotate(2deg); box-shadow: 0 30px 50px -24px rgba(0,0,0,.5); }
+  .final .chat div { background: #fff; border-radius: 12px 12px 12px 3px; padding: 9px 12px; font-size: 14px; margin-bottom: 8px; max-width: 88%; }
+  .final .chat div.yo { background: #D9FDD3; margin-left: auto; border-radius: 12px 12px 3px 12px; }
+  @media (max-width: 860px) { .final { grid-template-columns: 1fr; padding: 50px 26px; } }
+
+  footer { padding: 50px 0 40px; }
+  footer .wrap { display: flex; gap: 24px; align-items: center; justify-content: space-between; flex-wrap: wrap; font-size: 13px; color: var(--gris); }
+  footer .hecho { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  footer .hecho img { height: 44px; mix-blend-mode: multiply; }
+  .wa-float { position: fixed; right: 20px; bottom: 20px; width: 62px; height: 62px; border-radius: 50%; background: #25D366; display: grid; place-items: center; box-shadow: 0 10px 24px rgba(0,0,0,.25); z-index: 40; }
+  .wa-float svg { width: 32px; height: 32px; fill: #fff; }
+  @media (prefers-reduced-motion: reduce) { .cinta .pista, .badge .giro { animation: none; } }
+</style>
+</head>
+<body>
+<div class="demo-bar">
+  <span class="tag">DEMO</span><span class="txt">Hecha para <b>Casa Europa</b> por</span><img class="free" src="free-logo.png" alt="Free Marketing &amp; Publicidad">
+  <nav><a class="on" href="index.html">1 · Landing</a><a href="whatsapp.html">2 · Chatbot WhatsApp</a><a href="panel.html">3 · Panel</a></nav>
+</div>
+
+<header class="top">
+  <div class="barra">
+    <img class="logo-ce" src="logo.png" alt="Casa Europa · Auténtica charcutería">
+    <nav><a href="#como">Cómo participar</a><a href="#productos">Productos</a><a href="#premios">Premios</a><a href="#tiendas">Tiendas</a><a href="#faq">Preguntas</a></nav>
+    <a class="pill" href="whatsapp.html">💬 Participar</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <div class="sello"><span>PROMO 2027</span>Lima y provincias · Wong, Metro, Plaza Vea, Tottus y Makro</div>
+      <h1>Compra, registra <span class="rojo">y gana</span><span class="script">con el buen embutido</span></h1>
+      <p class="lead">Manda la foto de tu boleta por WhatsApp, suma opciones y participa por premios todos los meses y en 3 grandes sorteos con notario.</p>
+      <div class="ctas">
+        <a class="pill grande" href="whatsapp.html">💬 Participa por WhatsApp</a>
+        <a class="pill grande borde" href="#como">¿Cómo funciona?</a>
+      </div>
+      <div class="datos">
+        <div><b>S/ 10</b><span>= 1 opción</span></div>
+        <div><b>25</b><span>tiendas</span></div>
+        <div><b>3</b><span>sorteos con notario</span></div>
+      </div>
+    </div>
+    <div class="collage" id="collage">
+      <div class="badge">
+        <svg class="giro" viewBox="0 0 150 150"><defs><path id="circ" d="M75,75 m-58,0 a58,58 0 1,1 116,0 a58,58 0 1,1 -116,0"/></defs><text><textPath href="#circ">PREMIOS CADA MES · PREMIOS CADA MES ·</textPath></text></svg>
+        <div><em>HASTA</em><b>S/ 500</b></div>
+      </div>
+      <div class="burbuja"><i>WHATSAPP · AHORA</i>✅ ¡Comprobante aprobado! Sumaste 4 opciones</div>
+    </div>
+  </div>
+</div>
+
+<div class="cinta"><div class="pista" id="pista"></div></div>
+
+<section id="como">
+  <div class="wrap">
+    <div class="cabeza"><h2>Participar es <span class="script">así de fácil</span></h2><p>Todo pasa por WhatsApp. No hay que descargar nada ni crear cuentas: compras, mandas la foto y listo.</p></div>
+    <div class="pasos">
+      <div class="paso"><span class="n">1</span><div class="ic">🛒</div><h3>Compra</h3><p>Lleva tus productos Casa Europa favoritos en cualquier local de Wong, Metro, Plaza Vea, Tottus o Makro.</p></div>
+      <div class="paso rojo"><span class="n">2</span><div class="ic">📸</div><h3>Manda tu boleta</h3><p>Toma una foto clara de tu boleta o factura y envíala a nuestro WhatsApp. Te respondemos al instante.</p></div>
+      <div class="paso negro"><span class="n">3</span><div class="ic">🎁</div><h3>Suma y gana</h3><p>Cada S/ 10 en productos participantes es 1 opción. Mientras más compras, más chances.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="productos-sec" id="productos">
+  <div class="wrap">
+    <div class="cabeza"><h2>Productos <span class="script">que participan</span></h2><p>Todos nuestros jamones, chorizos, salchichas y madurados suman opciones. Estos son algunos favoritos.</p></div>
+    <div class="filtros-cat" id="filtrosCat"></div>
+    <div class="productos" id="productos-lista"></div>
+    <p class="fuente">Fotos y productos tomados de casaeuropa.pe para esta demo.</p>
+  </div>
+</section>
+
+<section id="premios">
+  <div class="wrap">
+    <div class="cabeza"><h2>Los <span class="script">premios</span></h2><p>Los ganadores se anuncian por WhatsApp y en esta web. Los sorteos grandes se hacen con notario.</p></div>
+    <div class="premios">
+      <div class="cupon">
+        <div class="eti">TODOS LOS MESES</div>
+        <h3>Tres ganadores cada mes</h3>
+        <div class="montos"><div><b>S/ 500</b><span>1er lugar</span></div><div><b>S/ 250</b><span>2do lugar</span></div><div><b>S/ 150</b><span>3er lugar</span></div></div>
+      </div>
+      <div class="cupon crema">
+        <div class="eti">CON NOTARIO</div>
+        <h3>Premios ilusión</h3>
+        <div class="montos"><div><span>Sorteo 1 · marzo</span><b>Gran premio</b></div><div><span>Sorteo 2 · julio</span><b>Gran premio</b></div><div><span>Sorteo 3 · noviembre</span><b>Gran premio</b></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tiendas" style="padding-top:0">
+  <div class="wrap">
+    <div class="cabeza"><h2>Dónde <span class="script">encontrarnos</span></h2><p>Tu compra vale en cualquier local de estas cadenas. Y en estas tiendas te esperan nuestras impulsadoras con tablets para ayudarte a registrarte.</p></div>
+    <div class="cadenas" id="cadenas"></div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="cabeza"><h2>Preguntas <span class="script">frecuentes</span></h2><p>Son las mismas respuestas que da el chatbot. Se editan desde el panel y cambian en los dos lados.</p></div>
+    <div class="faq" id="faq-lista"></div>
+  </div>
+</section>
+
+<div class="final">
+  <div>
+    <h2>¿Ya compraste? <span class="script">registra tu boleta</span></h2>
+    <a class="pill grande negra" href="whatsapp.html">💬 Abrir WhatsApp</a>
+  </div>
+  <div class="chat">
+    <div class="yo">Hola, quiero participar 🙌</div>
+    <div>¡Hola! 👋 Envíame la foto de tu boleta y te digo al toque cuántas opciones sumas.</div>
+    <div class="yo">📷 Foto de boleta</div>
+    <div>✅ ¡Aprobado! Sumaste <b>4 opciones</b>.</div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Promoción válida para mayores de 18 años. Al participar aceptas las bases y el tratamiento de tus datos personales (Ley N.° 29733).</span>
+    <span class="hecho">Demo hecha por <img src="free-logo.png" alt="Free Marketing &amp; Publicidad"></span>
+  </div>
+</footer>
+
+<a class="wa-float" href="whatsapp.html" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.6-.3z"/></svg></a>
+
+<script src="shared.js"></script>
+<script>
+  const E = CE.esc, P = CE.PRODUCTOS;
+  // Collage del hero con tres fotos reales
+  const col = document.getElementById('collage');
+  [['f1', 'pierna'], ['f2', 'parrillero'], ['f3', 'prosciutto']].forEach(([c, id]) => {
+    const p = P.find(x => x.id === id);
+    col.insertAdjacentHTML('beforeend', `<div class="foto ${c}"><img src="${p.img}" alt="${E(p.nombre)}" loading="eager"><small>${E(p.nombre)}</small></div>`);
+  });
+  // Cinta animada (se duplica para que el bucle no corte)
+  const cats = ['Jamones', 'Chorizos', 'Salchichas', 'Madurados', 'Fiambres', 'Tocino', 'Prosciutto', 'Bondiola'];
+  document.getElementById('pista').innerHTML = cats.concat(cats).map(c => `<span>${c}</span>`).join('');
+  // Productos con filtro por categoría
+  const catsP = ['Todos', ...new Set(P.map(p => p.cat))];
+  let cat = 'Todos';
+  function pintarProductos() {
+    document.getElementById('filtrosCat').innerHTML = catsP.map(c => `<button class="${c === cat ? 'on' : ''}" data-c="${c}">${c}</button>`).join('');
+    document.querySelectorAll('#filtrosCat button').forEach(b => b.onclick = () => { cat = b.dataset.c; pintarProductos(); });
+    document.getElementById('productos-lista').innerHTML = P.filter(p => cat === 'Todos' || p.cat === cat).map(p =>
+      `<div class="prod"><div class="img"><img src="${p.img}" alt="${E(p.nombre)}" loading="lazy"><span class="cat">${E(p.cat)}</span></div><div class="txt"><b>${E(p.nombre)}</b><span>${E(p.desc)}</span></div></div>`).join('');
+  }
+  pintarProductos();
+  document.getElementById('cadenas').innerHTML = CE.CADENAS.map(c =>
+    `<div class="cadena"><h4>${c.nombre}<small>${c.tiendas.length} tiendas</small></h4><div class="chips">${c.tiendas.map(t => `<span>${E(t)}</span>`).join('')}</div></div>`).join('');
+  function pintarFaq() {
+    const db = CE.cargar();
+    document.getElementById('faq-lista').innerHTML = db.faq.map(f =>
+      `<details><summary>${E(f.q)}</summary><p>${E(f.a.replace(/\*/g, ''))}</p></details>`).join('');
+  }
+  pintarFaq();
+  window.addEventListener('storage', e => { if (e.key === CE.KEY) pintarFaq(); });
+</script>
+</body>
+</html>

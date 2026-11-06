@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chatbot WhatsApp · Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { background: var(--crema-2); }
+  .escena { max-width: 1180px; margin: 0 auto; padding: 24px 20px 40px; display: grid; grid-template-columns: 400px 1fr; gap: 32px; align-items: start; }
+  @media (max-width: 900px) { .escena { grid-template-columns: 1fr; } }
+
+  /* Teléfono */
+  .tel { width: 100%; max-width: 400px; margin: 0 auto; height: min(820px, calc(100vh - 90px)); min-height: 560px; background: #111; border-radius: 42px; padding: 12px; box-shadow: 0 40px 80px -30px rgba(0,0,0,.5); position: sticky; top: 58px; }
+  .pantalla { height: 100%; border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; background: #EFE7DD; position: relative; }
+  .wa-head { background: #075E54; color: #fff; display: flex; align-items: center; gap: 10px; padding: 14px 14px 12px; }
+  .wa-head .av img { width: 34px; mix-blend-mode: multiply; }
+  .wa-head .av { width: 38px; height: 38px; border-radius: 50%; background: #fff; display: grid; place-items: center; overflow: hidden; font-size: 18px; flex: none; }
+  .wa-head b { display: flex; align-items: center; gap: 4px; font-size: 15px; }
+  .wa-head b svg { width: 14px; height: 14px; }
+  .wa-head span { font-size: 12px; opacity: .8; }
+  .chat { flex: 1; overflow-y: auto; padding: 12px 10px 6px; background-color: #EFE7DD; background-image: radial-gradient(rgba(0,0,0,.035) 1px, transparent 1px); background-size: 14px 14px; }
+  .aviso-e2e { background: #FFF5C4; color: #54493A; font-size: 11.5px; text-align: center; border-radius: 8px; padding: 6px 10px; margin: 0 18px 10px; }
+  .dia { text-align: center; margin: 6px 0 10px; }
+  .dia span { background: #E1F2FB; font-size: 11.5px; padding: 4px 10px; border-radius: 8px; color: #44535C; }
+  .msg { max-width: 82%; padding: 7px 9px 18px; border-radius: 10px; margin: 0 0 6px; position: relative; font-size: 14px; line-height: 1.38; white-space: pre-line; word-wrap: break-word; box-shadow: 0 1px 1px rgba(0,0,0,.08); }
+  .msg.bot { background: #fff; border-top-left-radius: 2px; }
+  .msg.yo { background: #D9FDD3; margin-left: auto; border-top-right-radius: 2px; }
+  .msg .h { position: absolute; right: 8px; bottom: 3px; font-size: 10.5px; color: #8696A0; }
+  .msg.yo .h::after { content: " ✓✓"; color: #53BDEB; }
+  .msg img, .msg canvas { display: block; width: 190px; border-radius: 6px; margin-bottom: 4px; }
+  .msg .ficha { margin-top: 6px; background: #F6F6F6; border-radius: 6px; padding: 6px 8px; font-size: 12.5px; white-space: normal; }
+  .msg .ficha div { display: flex; justify-content: space-between; gap: 8px; }
+  .msg .ficha span { color: #667781; }
+  .botones { max-width: 82%; margin: -2px 0 8px; display: grid; gap: 4px; }
+  .botones button { background: #fff; border: 0; border-radius: 8px; padding: 9px; color: #027EB5; font-weight: 600; font-size: 13.5px; box-shadow: 0 1px 1px rgba(0,0,0,.08); }
+  .botones button:hover { background: #F5FBFF; }
+  .botones.usados button { color: #A9B4BA; pointer-events: none; }
+  .escribiendo { background: #fff; display: inline-flex; gap: 4px; padding: 10px 12px; border-radius: 10px; margin-bottom: 6px; }
+  .escribiendo i { width: 7px; height: 7px; border-radius: 50%; background: #9AA6AC; animation: b 1s infinite; }
+  .escribiendo i:nth-child(2) { animation-delay: .15s; } .escribiendo i:nth-child(3) { animation-delay: .3s; }
+  @keyframes b { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+  .humano { font-size: 11px; font-weight: 700; color: #C2410C; display: block; margin-bottom: 2px; }
+  .barra { display: flex; gap: 6px; align-items: center; padding: 8px; background: #EFE7DD; }
+  .barra .caja { flex: 1; display: flex; align-items: center; background: #fff; border-radius: 22px; padding: 4px 6px 4px 14px; }
+  .barra input { flex: 1; border: 0; outline: 0; font-size: 14.5px; padding: 6px 0; min-width: 0; background: transparent; }
+  .clip { border: 0; background: none; font-size: 20px; padding: 4px 8px; color: #54656F; }
+  .enviar { width: 44px; height: 44px; border-radius: 50%; border: 0; background: #00A884; color: #fff; font-size: 18px; flex: none; }
+  .hoja { position: absolute; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 18px 18px 0 0; padding: 14px 14px 18px; box-shadow: 0 -10px 30px rgba(0,0,0,.18); transform: translateY(110%); transition: transform .25s; z-index: 5; max-height: 80%; overflow-y: auto; }
+  .hoja.on { transform: none; }
+  .hoja h4 { font-family: var(--texto); font-size: 14px; margin: 0 0 10px; display: flex; justify-content: space-between; }
+  .hoja h4 button { border: 0; background: none; font-size: 18px; color: #667781; }
+  .muestras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .muestra { border: 1px solid #E3E3E3; border-radius: 10px; background: #fff; padding: 6px; text-align: center; font-size: 11.5px; line-height: 1.25; }
+  .muestra canvas { width: 100%; height: 86px; object-fit: cover; object-position: top; border-radius: 6px; display: block; margin-bottom: 5px; }
+  .muestra .ic { height: 86px; display: grid; place-items: center; font-size: 30px; background: #F2F2F2; border-radius: 6px; margin-bottom: 5px; }
+  .muestra:hover { border-color: #00A884; }
+
+  /* Panel explicativo */
+  .lado h1 { font-size: 34px; margin-bottom: 6px; }
+  .lado > p { color: var(--gris); margin: 0 0 20px; }
+  .tarjeta { background: #fff; border-radius: var(--radio); padding: 18px 20px; box-shadow: var(--sombra); margin-bottom: 16px; }
+  .tarjeta h3 { font-size: 17px; font-family: var(--texto); font-weight: 700; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .costos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 6px 0 10px; }
+  .costos div { background: var(--crema); border-radius: 10px; padding: 10px 12px; }
+  .costos b { font-family: var(--titulo); font-size: 26px; display: block; }
+  .costos span { font-size: 12px; color: var(--gris); }
+  .costos .pago b { color: var(--rojo); }
+  .ventana { font-size: 13px; padding: 8px 12px; border-radius: 8px; background: #E6F6EE; color: #13603C; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .ventana.cerrada { background: #FBE1DE; color: #8C1D16; }
+  .ventana button { border: 0; background: rgba(0,0,0,.08); border-radius: 999px; padding: 4px 10px; font-size: 12px; }
+  .explica { font-size: 13px; color: var(--gris); margin: 10px 0 0; }
+  .checks { list-style: none; padding: 0; margin: 0; }
+  .checks li { display: grid; grid-template-columns: 24px 1fr; gap: 8px; padding: 8px 0; border-top: 1px solid var(--linea); font-size: 14px; }
+  .checks li:first-child { border-top: 0; }
+  .checks .ic { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: #fff; }
+  .ic.ok { background: var(--verde); } .ic.rechazo { background: var(--rojo); } .ic.dup { background: var(--morado); } .ic.revision { background: var(--naranja); }
+  .checks small { display: block; color: var(--gris); }
+  .leidos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 16px; font-size: 13.5px; margin-bottom: 12px; }
+  .leidos span { color: var(--gris); display: block; font-size: 11.5px; }
+  .vacio { color: var(--gris); font-size: 14px; }
+  .pruebas { margin: 0; padding-left: 18px; font-size: 14px; }
+  .pruebas li { margin-bottom: 6px; }
+  .acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="demo-bar">
+  <span class="tag">DEMO</span><span class="txt">Hecha para <b>Casa Europa</b> por</span><img class="free" src="free-logo.png" alt="Free Marketing &amp; Publicidad">
+  <nav><a href="index.html">1 · Landing</a><a class="on" href="whatsapp.html">2 · Chatbot WhatsApp</a><a href="panel.html">3 · Panel</a></nav>
+</div>
+
+<div class="escena">
+  <div class="tel">
+    <div class="pantalla">
+      <div class="wa-head">
+        <div class="av"><img src="logo.png" alt=""></div>
+        <div><b>Casa Europa <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#25D366"/><path d="M7 12.5l3.2 3L17 9" stroke="#fff" stroke-width="2.4" fill="none"/></svg></b><span id="estadoHead">Cuenta de empresa</span></div>
+      </div>
+      <div class="chat" id="chat">
+        <div class="aviso-e2e">🔒 Los mensajes están cifrados de extremo a extremo. Esta empresa usa un asistente automático y puede derivarte a una persona.</div>
+        <div class="dia"><span>HOY</span></div>
+      </div>
+      <div class="barra">
+        <div class="caja">
+          <input id="txt" placeholder="Mensaje" autocomplete="off">
+          <button class="clip" id="clip" title="Adjuntar foto">📎</button>
+        </div>
+        <button class="enviar" id="enviar">➤</button>
+      </div>
+      <div class="hoja" id="hoja">
+        <h4>Enviar foto de comprobante <button id="cerrarHoja">✕</button></h4>
+        <div class="muestras" id="muestras"></div>
+        <input type="file" id="archivo" accept="image/*" hidden>
+      </div>
+    </div>
+  </div>
+
+  <div class="lado">
+    <h1>Así responde el chatbot</h1>
+    <p>Escribe como lo haría un consumidor o usa los botones. A la derecha ves lo que el sistema hace por dentro y cuánto cuesta cada conversación.</p>
+
+    <div class="tarjeta">
+      <h3>Costo de WhatsApp de esta conversación</h3>
+      <div class="costos">
+        <div><b id="nUsuario">0</b><span>mensajes del consumidor</span></div>
+        <div><b id="nGratis">0</b><span>respuestas del bot · gratis</span></div>
+        <div class="pago"><b id="nPago">0</b><span>avisos pagados (plantillas)</span></div>
+      </div>
+      <div class="ventana" id="ventana"><span id="ventanaTxt">La ventana gratuita se abre cuando el consumidor escribe</span><button id="saltar" hidden>Simular que pasaron 25 h</button></div>
+      <p class="explica">Meta no cobra las respuestas del bot dentro de las 24 h después de que el consumidor escribe. Solo cobra los avisos que la marca envía primero (por ejemplo, "tu comprobante fue aprobado" un día después). Tarifa referencial en Perú: ~US$ 0,02 por aviso de servicio.</p>
+    </div>
+
+    <div class="tarjeta">
+      <h3>Último comprobante leído <span id="estadoChip"></span></h3>
+      <div id="lectura"><p class="vacio">Envía una foto con 📎 para ver la lectura automática y las reglas de validación.</p></div>
+    </div>
+
+    <div class="tarjeta">
+      <h3>Qué probar</h3>
+      <ol class="pruebas">
+        <li>Escribe <b>hola</b> y regístrate (nombre, DNI, distrito).</li>
+        <li>Envía la <b>boleta de Plaza Vea</b>: se aprueba y suma opciones.</li>
+        <li>Envíala <b>otra vez</b>: el sistema la marca como duplicada.</li>
+        <li>Prueba la <b>foto borrosa</b>, la <b>boleta de bodega</b> y la <b>compra grande</b>.</li>
+        <li>Escribe una pregunta libre, por ejemplo <b>"¿hasta cuándo es la promo?"</b>.</li>
+        <li>Abre el <a href="panel.html" target="_blank">panel</a> en otra pestaña: tus registros aparecen ahí al instante y desde ahí puedes aprobar los pendientes.</li>
+      </ol>
+      <div class="acciones" style="margin-top:12px"><button class="btn chico sec" id="reset">Empezar con otro consumidor</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const CHAT_KEY = 'ce-demo-chat';
+const VENTANA = 24 * 3600000;
+let db = CE.cargar();
+let st = cargarChat();
+let ocupado = false;
+
+function nuevoChat() {
+  return { celular: '9' + String(10000000 + Math.floor(Math.random() * 89999999)), paso: 'inicio', reg: {}, log: [], convId: 'V' + Date.now(),
+    ultimoUsuario: null, desfase: 0, n: { usuario: 0, gratis: 0, pago: 0 }, avisados: {}, ultimoComp: null };
+}
+function cargarChat() { try { const s = JSON.parse(localStorage.getItem(CHAT_KEY)); if (s && s.celular) return s; } catch (e) {} return nuevoChat(); }
+function guardarChat() { try { localStorage.setItem(CHAT_KEY, JSON.stringify(st)); } catch (e) {} }
+const ahora = () => Date.now() + (st.desfase || 0);
+
+// ---------- pintar mensajes ----------
+function pintar(m, animar) {
+  const chat = $('chat');
+  if (m.tipo === 'botones') {
+    const d = document.createElement('div'); d.className = 'botones' + (m.usado ? ' usados' : '');
+    m.opciones.forEach(o => { const b = document.createElement('button'); b.textContent = o; b.onclick = () => { m.usado = true; d.classList.add('usados'); guardarChat(); usuarioDice(o); }; d.appendChild(b); });
+    chat.appendChild(d);
+  } else {
+    const d = document.createElement('div'); d.className = 'msg ' + m.de;
+    if (m.humano) d.innerHTML = '<span class="humano">' + CE.esc(m.humano) + '</span>';
+    if (m.img) {
+      if (m.img.muestra) { const cv = document.createElement('canvas'); CE.dibujarBoleta(cv, m.img.muestra, { borroso: m.img.borroso }); d.appendChild(cv); }
+      else { const im = new Image(); im.src = m.img.url; d.appendChild(im); }
+    }
+    if (m.texto) d.appendChild(document.createTextNode(m.texto.replace(/\*(.+?)\*/g, '$1')));
+    if (m.ficha) { const f = document.createElement('div'); f.className = 'ficha'; f.innerHTML = m.ficha.map(([k, v]) => `<div><span>${CE.esc(k)}</span><b>${CE.esc(v)}</b></div>`).join(''); d.appendChild(f); }
+    const h = document.createElement('span'); h.className = 'h'; h.textContent = CE.fmtHora(m.t); d.appendChild(h);
+    chat.appendChild(d);
+  }
+  chat.scrollTop = chat.scrollHeight;
+}
+function repintar() {
+  const chat = $('chat');
+  chat.querySelectorAll('.msg,.botones,.escribiendo').forEach(e => e.remove());
+  st.log.forEach(m => pintar(m));
+  if (!st.log.length) { $('txt').value = 'Hola, quiero participar en la Promo Casa Europa'; }
+  pintarCostos();
+  if (st.ultimoComp) pintarLectura(db.comprobantes.find(c => c.id === st.ultimoComp));
+}
+
+// ---------- bot ----------
+const MENU = ['1 · Registrar mi compra', '2 · Cómo participo', '3 · Mis opciones', '4 · Preguntas frecuentes', '5 · Hablar con un asesor'];
+const cola = [];
+function bot(m) { cola.push(m); }
+async function soltar() {
+  ocupado = true;
+  while (cola.length) {
+    const m = cola.shift();
+    const e = document.createElement('div'); e.className = 'escribiendo'; e.innerHTML = '<i></i><i></i><i></i>';
+    $('chat').appendChild(e); $('chat').scrollTop = 1e9;
+    await espera(m.demora || (m.tipo === 'botones' ? 250 : 650));
+    e.remove();
+    m.de = m.de || 'bot'; m.t = ahora();
+    if (m.tipo !== 'botones') contar(m.plantilla ? 'pago' : 'gratis');
+    st.log.push(m); guardarChat(); pintar(m, true);
+  }
+  ocupado = false; actualizarConv();
+}
+const espera = ms => new Promise(r => setTimeout(r, ms));
+function contar(tipo) { st.n[tipo]++; pintarCostos(); }
+
+function menu(texto) {
+  bot({ texto: texto || '¿Qué quieres hacer?' });
+  bot({ tipo: 'botones', opciones: MENU });
+}
+
+function usuarioDice(texto, img) {
+  if (ocupado) return;
+  const m = { de: 'yo', texto, t: ahora(), img };
+  st.log.push(m); st.ultimoUsuario = ahora(); contar('usuario'); pintar(m);
+  guardarChat();
+  responder(texto || '', img);
+  soltar();
+}
+
+function responder(texto, img) {
+  const n = CE.norm(texto);
+  const r = st.reg;
+  if (img) return recibirFoto(img);
+  // Pasos del registro
+  if (st.paso === 'nombre') {
+    if (n.length < 5 || n.split(' ').length < 2) return bot({ texto: 'Escribe tu nombre y apellido, por favor 🙂' });
+    r.nombre = texto.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' '); st.paso = 'dni';
+    return bot({ texto: `Gracias, ${r.nombre.split(' ')[0]}. Ahora tu número de DNI (8 dígitos):` });
+  }
+  if (st.paso === 'dni') {
+    const d = texto.replace(/\D/g, '');
+    if (d.length !== 8) return bot({ texto: 'El DNI debe tener 8 dígitos. Inténtalo otra vez:' });
+    r.dni = d; st.paso = 'distrito';
+    return bot({ texto: '¿En qué distrito vives?' });
+  }
+  if (st.paso === 'distrito') {
+    r.distrito = texto.trim(); st.paso = 'consent';
+    bot({ texto: 'Último paso: para participar necesitamos tu autorización para usar tus datos solo en esta promoción (Ley N.° 29733). Puedes ver las bases en la web de la promo.' });
+    return bot({ tipo: 'botones', opciones: ['Acepto', 'No acepto'] });
+  }
+  if (st.paso === 'consent') {
+    if (n.startsWith('acepto')) {
+      r.ok = true; st.paso = 'foto';
+      const p = { id: 'P' + Date.now(), nombre: r.nombre, dni: r.dni, celular: st.celular, distrito: r.distrito, creado: ahora(), canal: 'Landing → WhatsApp' };
+      db = CE.cargar(); db.participantes.unshift(p); CE.guardar(db); r.pid = p.id;
+      return bot({ texto: `¡Listo, ${r.nombre.split(' ')[0]}! Ya estás registrado ✅\n\nAhora envía la *foto de tu boleta o factura* con el 📎. Que se vea completa: RUC, número, fecha y total.` });
+    }
+    if (n.startsWith('no acepto')) { st.paso = 'inicio'; return menu('Entendido. Sin tu autorización no podemos registrarte, pero puedes consultar lo que necesites.'); }
+    return bot({ tipo: 'botones', opciones: ['Acepto', 'No acepto'] });
+  }
+  if (st.paso === 'asesor') {
+    if (n.includes('menu') || n === 'volver al menu') { st.paso = 'inicio'; return menu(); }
+    return bot({ humano: 'Karla · Asesora Free', texto: 'Gracias, ya lo estoy revisando. Te respondo en un momento.' });
+  }
+  // Menú
+  if (/^1\b/.test(n) || n.includes('registrar')) return pedirRegistro();
+  if (/^2\b/.test(n)) return faq('participar');
+  if (/^3\b/.test(n) || n.includes('mis opciones')) return misOpciones();
+  if (/^4\b/.test(n) || n.includes('preguntas frecuentes')) {
+    bot({ texto: 'Elige una pregunta:' });
+    return bot({ tipo: 'botones', opciones: db.faq.map(f => f.q) });
+  }
+  if (/^5\b/.test(n)) return asesor();
+  const f = db.faq.find(f => CE.norm(f.q) === n);
+  if (f) return faq(f.id);
+  if (/^(hola|buenas|buenos|hey|quiero participar|hola quiero)/.test(n) || n.includes('participar en la promo')) {
+    return menu(st.reg.ok ? `¡Hola de nuevo, ${st.reg.nombre.split(' ')[0]}! 👋` : '¡Hola! 👋 Soy el asistente de la *Promo Casa Europa 2027*. Registra tus compras por aquí y gana premios cada mes.');
+  }
+  // Pregunta libre: buscamos en las preguntas frecuentes
+  let mejor = null, pts = 0;
+  db.faq.forEach(f => { const p = (f.k || []).reduce((s, k) => s + (n.includes(CE.norm(k)) ? 2 : 0), 0) + CE.norm(f.q).split(' ').filter(w => w.length > 4 && n.includes(w)).length; if (p > pts) { pts = p; mejor = f; } });
+  if (mejor && pts >= 2) { faq(mejor.id); return bot({ tipo: 'botones', opciones: ['Volver al menú'] }); }
+  if (n.includes('volver al menu')) return menu();
+  if (n.includes('gracias')) return bot({ texto: '¡A ti! Mucha suerte en los sorteos 🍀' });
+  menu('No entendí bien tu mensaje 😅 Elige una opción o escribe *5* para hablar con una persona.');
+}
+function faq(id) { const f = db.faq.find(x => x.id === id); if (f) bot({ texto: f.a }); }
+function pedirRegistro() {
+  if (st.reg.ok) { st.paso = 'foto'; return bot({ texto: 'Envía la foto de tu boleta o factura con el 📎.' }); }
+  st.paso = 'nombre';
+  return bot({ texto: 'Primero te registro, solo toma un momento.\n\n¿Cuál es tu nombre y apellido?' });
+}
+function asesor() {
+  st.paso = 'asesor';
+  bot({ texto: 'Te estoy derivando con un asesor de nuestro equipo. Horario de atención: 9 a. m. a 6 p. m.' });
+  bot({ humano: 'Karla · Asesora Free', texto: 'Hola, soy Karla 👋 ¿En qué te puedo ayudar?', demora: 1800 });
+  bot({ tipo: 'botones', opciones: ['Volver al menú'] });
+}
+function misOpciones() {
+  if (!st.reg.ok) return bot({ texto: 'Aún no estás registrado. Escribe *1* para registrar tu primera compra.' });
+  db = CE.cargar();
+  const mios = db.comprobantes.filter(c => c.dni === st.reg.dni);
+  if (!mios.length) return bot({ texto: 'Todavía no registras comprobantes. Escribe *1* para enviar tu boleta.' });
+  const tot = mios.reduce((s, c) => s + (c.estado === 'aprobado' ? c.opciones : 0), 0);
+  bot({ texto: `Tienes *${tot} opciones* para el próximo sorteo 🎉\n\n` + mios.map(c => `${c.serie}-${c.numero} · ${CE.ETIQ[c.estado]}${c.estado === 'aprobado' ? ' · ' + c.opciones + ' opc.' : ''}`).join('\n') });
+}
+
+// ---------- fotos de ejemplo ----------
+function hace(dias) { return new Date(Date.now() - dias * CE.DIA).toISOString().slice(0, 10); }
+const P = id => CE.PRODUCTOS.find(p => p.id === id);
+const it = (id, cant) => ({ id, nombre: P(id).nombre, cant, precio: P(id).precio, participa: true });
+const otro = (nombre, precio, cant) => ({ nombre, precio, cant: cant || 1, participa: false });
+function sumar(c) { c.importe = +c.items.reduce((s, i) => s + i.cant * i.precio, 0).toFixed(2); return c; }
+const MUESTRAS = [
+  { id: 'pvea', titulo: 'Boleta Plaza Vea', c: () => sumar({ tipo: 'Boleta', ruc: '20100070970', razon: 'SUPERMERCADOS PERUANOS S.A.', cadena: 'Plaza Vea', tienda: 'Salaverry', serie: 'B201', numero: '00045871', fecha: hace(1), confianza: 0.97, items: [it('ingles', 2), it('parrillero', 1), otro('Arroz extra 5 kg', 21.9), otro('Gaseosa 3 L', 9.5)] }) },
+  { id: 'tottus', titulo: 'Boleta Tottus (nueva)', c: () => sumar({ tipo: 'Boleta', ruc: '20508565934', razon: 'HIPERMERCADOS TOTTUS S.A.', cadena: 'Tottus', tienda: 'La Marina', serie: 'B0' + (10 + Math.floor(Math.random() * 80)), numero: String(Math.floor(Math.random() * 9e7)).padStart(8, '0'), fecha: hace(0), confianza: 0.95, items: [it('tocino', 1), it('pierna', 1), it('frank', 2), otro('Pan de molde', 8.9)] }) },
+  { id: 'bodega', titulo: 'Boleta de bodega', c: () => sumar({ tipo: 'Boleta', ruc: '10456789121', razon: 'BODEGA DOÑA ROSA', cadena: 'Otro comercio', tienda: '—', serie: 'B001', numero: '00000312', fecha: hace(0), confianza: 0.93, items: [it('ingles', 1), otro('Leche evaporada x6', 24)] }) },
+  { id: 'borrosa', titulo: 'Foto borrosa', borroso: true, c: () => sumar({ tipo: 'Boleta', ruc: '20109072177', razon: 'CENCOSUD RETAIL PERU S.A.', cadena: 'Wong', tienda: 'Aurora', serie: 'B115', numero: String(Math.floor(Math.random() * 9e7)).padStart(8, '0'), fecha: hace(0), confianza: 0.52, items: [it('hungaro', 2), it('parrillero', 1)] }) },
+  { id: 'grande', titulo: 'Compra grande S/ 400+', c: () => sumar({ tipo: 'Factura', ruc: '20492092313', razon: 'MAKRO SUPERMAYORISTA S.A.', cadena: 'Makro', tienda: 'Santa Anita', serie: 'F0' + (10 + Math.floor(Math.random() * 80)), numero: String(Math.floor(Math.random() * 9e7)).padStart(8, '0'), fecha: hace(0), confianza: 0.94, items: [it('ingles', 10), it('parrillero', 8), it('tocino', 6), it('hungaro', 5)] }) },
+];
+function pintarMuestras() {
+  const cont = $('muestras'); cont.innerHTML = '';
+  MUESTRAS.forEach(m => {
+    const b = document.createElement('button'); b.className = 'muestra';
+    const cv = document.createElement('canvas'); CE.dibujarBoleta(cv, Object.assign(m.c(), { recibido: Date.now() }), { borroso: m.borroso });
+    b.appendChild(cv); b.appendChild(document.createTextNode(m.titulo));
+    b.onclick = () => { cerrarHoja(); const c = m.c(); c.recibido = ahora(); usuarioDice('', { muestra: c, borroso: m.borroso }); };
+    cont.appendChild(b);
+  });
+  const b = document.createElement('button'); b.className = 'muestra';
+  b.innerHTML = '<div class="ic">🖼️</div>Subir mi propia foto';
+  b.onclick = () => $('archivo').click();
+  cont.appendChild(b);
+}
+$('archivo').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    const im = new Image();
+    im.onload = () => {
+      const k = Math.min(1, 420 / im.width), cv = document.createElement('canvas');
+      cv.width = im.width * k; cv.height = im.height * k; cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+      cerrarHoja(); usuarioDice('', { url: cv.toDataURL('image/jpeg', 0.7), propia: true });
+    };
+    im.src = rd.result;
+  };
+  rd.readAsDataURL(f); e.target.value = '';
+};
+
+function recibirFoto(img) {
+  if (!st.reg.ok) {
+    bot({ texto: '¡Gracias por tu foto! Antes de registrarla necesito tus datos.' });
+    st.fotoPendiente = img;
+    return pedirRegistro();
+  }
+  db = CE.cargar();
+  let c;
+  if (img.propia) {
+    c = { tipo: 'Boleta', ruc: '', razon: 'Por leer', cadena: '—', tienda: '—', serie: '—', numero: String(Date.now()).slice(-8), fecha: hace(0), importe: 0, items: [], confianza: 0, recibido: ahora() };
+  } else c = img.muestra;
+  Object.assign(c, { id: 'C' + Date.now(), participanteId: st.reg.pid, nombre: st.reg.nombre, dni: st.reg.dni, celular: st.celular, recibido: ahora(), imagen: img.propia ? img.url : 'muestra', borroso: !!img.borroso });
+  let v;
+  if (img.propia) v = { estado: 'pendiente', motivo: 'Foto propia: la revisa una persona', opciones: 0, checks: [{ regla: 'Lectura automática', ok: false, nivel: 'revision', detalle: 'En la demo no se lee una foto real. En producción la IA extrae RUC, número, fecha, importe y productos.' }] };
+  else v = CE.validar(c, db.comprobantes);
+  Object.assign(c, { estado: v.estado, motivo: v.motivo, checks: v.checks, opciones: v.opciones });
+  db.comprobantes.unshift(c); CE.guardar(db);
+  st.ultimoComp = c.id; st.avisados[c.id] = c.estado;
+  pintarLectura(c);
+  bot({ texto: 'Recibido 📸 Estoy leyendo tu comprobante…', demora: 500 });
+  const ficha = img.propia ? null : [['Comercio', c.cadena], ['Comprobante', c.serie + '-' + c.numero], ['Fecha', c.fecha.split('-').reverse().join('/')], ['Total', CE.soles(c.importe)]];
+  const textos = {
+    aprobado: () => `✅ *¡Comprobante aprobado!* Sumaste *${c.opciones} ${c.opciones === 1 ? 'opción' : 'opciones'}*.\n\nEscribe *3* para ver tu total o envía otra boleta.`,
+    duplicado: () => `⚠️ Este comprobante *ya fue registrado* antes, así que no suma opciones. Cada boleta vale una sola vez.\n\nSi crees que es un error escribe *5* para hablar con un asesor.`,
+    pendiente: () => `🕐 Recibimos tu comprobante y lo está *revisando una persona* (${c.motivo.toLowerCase()}). Te avisamos por aquí en menos de 24 horas.`,
+    rechazado: () => ({
+      'Imagen ilegible': '❌ No pudimos leer bien la foto. Tómala de nuevo con buena luz, sin cortar los bordes, y vuelve a enviarla.',
+      'Comercio no participante': '❌ Esta boleta es de un comercio que no participa. Solo valen compras en Wong, Metro, Plaza Vea, Tottus y Makro.',
+      'Sin productos participantes': '❌ No encontramos productos Casa Europa en esta boleta.',
+      'Fuera de vigencia': '❌ La fecha de compra está fuera de la vigencia de la promoción.',
+    }[c.motivo] || '❌ No pudimos aprobar este comprobante: ' + c.motivo),
+  };
+  bot({ texto: textos[c.estado](), ficha: c.estado === 'rechazado' && c.motivo === 'Imagen ilegible' ? null : ficha, demora: 1600 });
+}
+
+function pintarLectura(c) {
+  if (!c) return;
+  $('estadoChip').innerHTML = `<span class="chip e-${c.estado}">${CE.ETIQ[c.estado]}</span>`;
+  const iconos = { ok: '✓', rechazo: '✕', dup: '⧉', revision: '!' };
+  const prods = (c.items || []).filter(i => i.participa).map(i => i.cant + '× ' + i.nombre).join(', ') || '—';
+  $('lectura').innerHTML = (c.imagen === 'muestra' ? `<div class="leidos">
+      <div><span>Emisor</span>${CE.esc(c.razon)}</div><div><span>RUC</span>${CE.esc(c.ruc)}</div>
+      <div><span>Comprobante</span>${CE.esc(c.tipo + ' ' + c.serie + '-' + c.numero)}</div><div><span>Fecha</span>${CE.esc(c.fecha)}</div>
+      <div><span>Importe</span>${CE.soles(c.importe)}</div><div><span>Confianza de lectura</span>${Math.round(c.confianza * 100)} %</div>
+      <div style="grid-column:1/-1"><span>Productos participantes</span>${CE.esc(prods)}</div></div>` : '') +
+    `<ul class="checks">${c.checks.map(k => `<li><span class="ic ${k.nivel}">${iconos[k.nivel]}</span><div>${CE.esc(k.regla)}<small>${CE.esc(k.detalle)}</small></div></li>`).join('')}</ul>`;
+}
+
+// ---------- costos y ventana de 24 h ----------
+function pintarCostos() {
+  $('nUsuario').textContent = st.n.usuario; $('nGratis').textContent = st.n.gratis; $('nPago').textContent = st.n.pago;
+  const v = $('ventana'), t = $('ventanaTxt');
+  if (!st.ultimoUsuario) { v.className = 'ventana'; t.textContent = 'La ventana gratuita de 24 h se abre cuando el consumidor escribe'; $('saltar').hidden = true; return; }
+  const resta = st.ultimoUsuario + VENTANA - ahora();
+  if (resta > 0) {
+    const h = Math.floor(resta / 3600000), m = Math.floor(resta % 3600000 / 60000);
+    v.className = 'ventana'; t.textContent = `🟢 Ventana gratuita abierta: quedan ${h} h ${m} min`; $('saltar').hidden = false;
+  } else { v.className = 'ventana cerrada'; t.textContent = '🔴 Ventana cerrada: cualquier aviso de la marca ahora es una plantilla pagada'; $('saltar').hidden = true; }
+}
+$('saltar').onclick = () => { st.desfase = (st.desfase || 0) + 25 * 3600000; guardarChat(); pintarCostos(); };
+setInterval(pintarCostos, 30000);
+
+// ---------- avisos cuando el validador decide en el panel ----------
+window.addEventListener('storage', e => {
+  if (e.key !== CE.KEY) return;
+  db = CE.cargar();
+  db.comprobantes.filter(c => c.celular === st.celular).forEach(c => {
+    const antes = st.avisados[c.id];
+    if (antes === 'pendiente' && c.estado !== 'pendiente') {
+      st.avisados[c.id] = c.estado;
+      const abierta = st.ultimoUsuario && ahora() - st.ultimoUsuario < VENTANA;
+      const txt = c.estado === 'aprobado'
+        ? `✅ Buenas noticias: tu comprobante ${c.serie}-${c.numero} fue *aprobado* por nuestro equipo. Sumaste *${c.opciones} opciones*.`
+        : `❌ Revisamos tu comprobante ${c.serie}-${c.numero} y no pudimos aprobarlo: ${c.motivo}.`;
+      bot({ texto: txt + (abierta ? '' : '\n\n(Aviso enviado como plantilla aprobada por Meta)'), plantilla: !abierta, demora: 400 });
+      if (st.ultimoComp === c.id) pintarLectura(c);
+    }
+  });
+  guardarChat();
+  if (!ocupado) soltar();
+});
+
+// ---------- conversación en la base (para el panel) ----------
+function actualizarConv() {
+  db = CE.cargar();
+  let v = db.conversaciones.find(x => x.id === st.convId);
+  if (!v) { if (!st.log.length) return; v = { id: st.convId, celular: st.celular, inicio: st.log[0].t, live: true }; db.conversaciones.unshift(v); }
+  Object.assign(v, {
+    nombre: st.reg.nombre || null, ultimo: ahora(), mensajes: st.log.filter(m => m.tipo !== 'botones').length,
+    tema: st.ultimoComp ? 'Registro de compra' : (st.paso === 'asesor' ? 'Hablar con asesor' : 'Consulta'),
+    estado: st.paso === 'asesor' ? 'Atendida por asesor' : 'Resuelta por el bot', plantillas: st.n.pago,
+    log: st.log.filter(m => m.tipo !== 'botones').map(m => ({ de: m.de, t: m.t, texto: m.texto || (m.img ? '📷 Foto de comprobante' : ''), humano: m.humano })),
+  });
+  CE.guardar(db);
+  // Si mandó la foto antes de registrarse, se procesa al terminar el registro
+  if (st.reg.ok && st.fotoPendiente) { const f = st.fotoPendiente; st.fotoPendiente = null; guardarChat(); recibirFoto(f); soltar(); }
+}
+
+// ---------- entrada ----------
+function enviarTexto() { const t = $('txt').value.trim(); if (!t) return; $('txt').value = ''; usuarioDice(t); }
+$('enviar').onclick = enviarTexto;
+$('txt').addEventListener('keydown', e => { if (e.key === 'Enter') enviarTexto(); });
+function cerrarHoja() { $('hoja').classList.remove('on'); }
+$('clip').onclick = () => { pintarMuestras(); $('hoja').classList.add('on'); };
+$('cerrarHoja').onclick = cerrarHoja;
+$('reset').onclick = () => { st = nuevoChat(); guardarChat(); $('lectura').innerHTML = '<p class="vacio">Envía una foto con 📎 para ver la lectura automática y las reglas de validación.</p>'; $('estadoChip').innerHTML = ''; repintar(); };
+repintar();
+</script>
+</body>
+</html>
